@@ -1,7 +1,5 @@
 package com.airwallex.exercise.rpncalculator;
 
-import com.airwallex.exercise.rpncalculator.Model;
-import com.airwallex.exercise.rpncalculator.RPNCalculatorException;
 import org.junit.Before;
 import org.junit.Test;
 
