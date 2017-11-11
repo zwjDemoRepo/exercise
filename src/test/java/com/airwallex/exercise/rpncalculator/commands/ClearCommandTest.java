@@ -1,4 +1,4 @@
-package rpncalculator.commands;
+package com.airwallex.exercise.rpncalculator.commands;
 
 
 import com.airwallex.exercise.rpncalculator.Model;

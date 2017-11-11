@@ -1,9 +1,9 @@
-package rpncalculator.commands;
+package com.airwallex.exercise.rpncalculator.commands;
 
 import com.airwallex.exercise.rpncalculator.Model;
 import com.airwallex.exercise.rpncalculator.RPNCalculatorException;
 import com.airwallex.exercise.rpncalculator.commands.Command;
-import com.airwallex.exercise.rpncalculator.commands.SqrtCommand;
+import com.airwallex.exercise.rpncalculator.commands.DivideCommand;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class SqrtCommandTest {
+public class DivideCommandTest {
 
     private Model model;
 
@@ -22,38 +22,40 @@ public class SqrtCommandTest {
 
     @Test(expected = NullPointerException.class)
     public void executeWithNullModel() throws RPNCalculatorException {
-        Command cmd = new SqrtCommand(null);
+        Command cmd = new DivideCommand(null);
         cmd.execute();
     }
 
     @Test(expected = NullPointerException.class)
     public void undoWithNullModel() throws RPNCalculatorException {
-        Command cmd = new SqrtCommand(null);
+        Command cmd = new DivideCommand(null);
         cmd.undo();
     }
 
     @Test(expected = RPNCalculatorException.class)
     public void executeWithEmptyModel() throws RPNCalculatorException {
-        Command cmd = new SqrtCommand(model);
+        Command cmd = new DivideCommand(model);
         cmd.execute();
     }
 
     @Test(expected = RPNCalculatorException.class)
     public void undoWithEmptyModel() throws RPNCalculatorException {
-        Command cmd = new SqrtCommand(model);
+        Command cmd = new DivideCommand(model);
         cmd.undo();
     }
 
     @Test(expected = RPNCalculatorException.class)
     public void executeWithInsuficientOperands() throws RPNCalculatorException {
-        Command cmd = new SqrtCommand(model);
+        model.push(new BigDecimal(1));
+        Command cmd = new DivideCommand(model);
         cmd.execute();
     }
 
     @Test
     public void executeSuccess() throws RPNCalculatorException {
         model.push(new BigDecimal(9));
-        Command cmd = new SqrtCommand(model);
+        model.push(new BigDecimal(3));
+        Command cmd = new DivideCommand(model);
         cmd.execute();
         assertThat(model.getContents()).isEqualTo("3");
     }
@@ -61,16 +63,28 @@ public class SqrtCommandTest {
     @Test
     public void executeAndUndoSuccess() throws RPNCalculatorException {
         model.push(new BigDecimal(9));
-        Command cmd = new SqrtCommand(model);
+        model.push(new BigDecimal(3));
+        Command cmd = new DivideCommand(model);
         cmd.execute();
         cmd.undo();
-        assertThat(model.getContents()).isEqualTo("9");
+        assertThat(model.getContents()).isEqualTo("9 3");
     }
 
     @Test(expected = RPNCalculatorException.class)
-    public void executeSqrtOfNegativeNumber() throws RPNCalculatorException {
-        model.push(new BigDecimal(-9));
-        Command cmd = new SqrtCommand(model);
+    public void executeDivideByZero() throws RPNCalculatorException {
+        model.push(new BigDecimal(9));
+        model.push(new BigDecimal(0));
+        Command cmd = new DivideCommand(model);
         cmd.execute();
+        assertThat(model.getContents()).isEqualTo("3");
+    }
+
+    @Test(expected = RPNCalculatorException.class)
+    public void executeDivideByZero2() throws RPNCalculatorException {
+        model.push(new BigDecimal(9));
+        model.push(new BigDecimal(0.00));
+        Command cmd = new DivideCommand(model);
+        cmd.execute();
+        assertThat(model.getContents()).isEqualTo("3");
     }
 }
